@@ -1,0 +1,28 @@
+=== This is the README of the Coud-TM WPM prototype === wpm is released as a zip file. The decompressed folder tree is:
+WPM_prototype_V1.0.zip -> WPM_prototype_V1.0 -> -> infinispan_test -> -> wpm
+INFINISPAN_TEST: This folder contains a simple test application that uses an Infinispan cache. It exposes some parameters via the MBean sever, which are acquired by wpm.
+The command to run the application is: java -cp . -Dcom.sun.management.jmxremote.port=9999
+-Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -jar test_infinispan.jar
+This is contained within the script file: run_test_infinispan.sh
+WPM This folder contains the wpm system. wpm is composed by the following three modules:
+- Log Service
+- Consumer
+- Producer
+each module requires its configuration file (which 16
+mimics registry access) located in the "config" folder.
+LOG SERVICE:
+The configuration file is "config/log_service.config". This module logs the collected statistics within an Infinispan cache. The configuration file for the Infinispan instance is located within the "config" folder and its name is specified within the "log_service.config" file.
+The command lo run the Log Service module is: java -cp . -Djavax.net.ssl.keyStore=config/serverkeys -Djavax.net.ssl.keyStorePassword=cloudtm -Djavax.net.ssl.trustStore=config/serverkeys -Djavax.net.ssl.trustStorePassword=cloudtm -jar wpm.jar logService
+This is contained within the script file: run_log_service.sh
+
+CONSUMER:
+The configuration file is "config/resource_consumer.config".
+The command to run the Consumer module is: java -cp . -Djavax.net.ssl.trustStore=config/serverkeys -Djavax.net.ssl.trustStorePassword=cloudtm -Djavax.net.ssl.keyStore=config/serverkeys -Djavax.net.ssl.keyStorePassword=cloudtm -jar wpm.jar consumer
+This is contained within the script file: run_consumer.sh
+
+PRODUCER: The configuration file is "config/resource_controller.config".
+The command lo run the Producer module is: java -cp . -jar wpm.jar producer
+This is contained within the script file: run_producer.sh
+
+All the modules communicate via sockets, and network firewall rules MUST BE configured in order not to drop the requests/packets through the ports specified by the configuration files.
+For a correct startup, the modules MUST BE activated in the following order INFINISPAN_TEST, LOG SERVICE, CONSUMER, PRODUCER.
